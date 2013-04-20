@@ -3,6 +3,10 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import adapter.ProxyAutomotive;
+
+import util.FileIO;
+
 /**
 * Hung Quach
 * CIS 35B
@@ -14,11 +18,40 @@ import java.util.ArrayList;
 * and print the model name, base price, and the set of options for a car 
 * configuration
 */
-public class Automotive implements Serializable 
+public class Automotive extends ProxyAutomotive implements Serializable 
 {
     // Constants ========================================================
 
-    private static final long serialVersionUID = -5105910834572049363L;
+	@Override
+	public Automotive buildAuto(String fileName) 
+	{
+		return new FileIO(fileName).readFile();
+	}
+
+	@Override
+	public void modifyNameAndBasePrice(String modelName, int basePrice) 
+	{
+		updateModelNameAndPrice(modelName, basePrice);
+	}
+
+	@Override
+	public void modifyOptionSet(String originalSetName, String newSetName) 
+	{
+		updateOptionSet(originalSetName, newSetName);
+    }
+
+	@Override
+	public void modifyOption(String set, String opt, String name, int price) 
+	{
+		updateOption(set, opt, name, price);
+    }
+
+	@Override
+	public void print() {
+		printModel();
+	}
+
+	private static final long serialVersionUID = -5105910834572049363L;
     private final int DEFAULT_OPTIONSET = 5;
     
     // Properties =======================================================
@@ -100,6 +133,22 @@ public class Automotive implements Serializable
     }
     
     // Methods ==========================================================
+    public Automotive createAutomotive(String filename)
+    {
+    	Automotive temp = new FileIO().readFile(filename);
+    	return temp;
+    }
+    
+    public void updateModelNameAndPrice(String name, int price)
+    {
+    	this.name = name;
+    	this.price = price;
+    }
+    
+    public void updateOption(String optName, String optionName, String newName, int newPrice)
+    {
+    	matchOptionSet(optName).getOption(optionName).update(newName, newPrice);
+    }
     
     /**
     * Add a new option set to the array list of option set. 
@@ -312,9 +361,5 @@ public class Automotive implements Serializable
         optionset.remove(matchOptionSet(name));
     }
     
-    public static void main(String[] args)
-    {
-        Automotive test = new Automotive();
-        test.matchOptionSet(200);
-    }
+   
 }
