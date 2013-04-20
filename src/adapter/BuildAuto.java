@@ -6,8 +6,6 @@ import util.*;
 
 public class BuildAuto implements AutomotiveAPI
 {
-	//private static final long serialVersionUID = -4807465514121630378L;
-	
 	private Automotive a1;
 	
     public void readFile(String filename) 
