@@ -1,5 +1,5 @@
 package adapter;
-import exceptions.*;
+import temp.UpdateConfiguration;
 import model.Automotive;
 /**
 * Class BuildAuto
@@ -26,16 +26,7 @@ public class BuildAuto implements FileInput, UpdateConfiguration
     */
     public void readFile(String fileName)
     {   
-        System.out.println("BuildAuto: readFile()");
-        try 
-        {
-            auto = new util.FileIO("FordZTW.txt").buildAutoFromFile();
-
-        } catch (AutoException e) 
-        {
-            e.printStackTrace();
-            e.fixallmyproblem();
-        }
+        auto = new util.FileIO("FordZTW.txt").buildAutoFromFile();
     }
     
     /**

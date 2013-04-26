@@ -1,18 +1,9 @@
-package adapter;
+package temp;
 /**
-* @author hquach
-* API for FileInput
-* Enforce a contract between classes for methods
-* Enable Polymorphism 
-* Define API
-* 
-* Class can implement multiply interfaces
-* Neither Interface and Abstract Class can not be instantiated
+* Automotive Interface to Update the configuration of the Automotive objects
 */
-public interface FileInput 
-{   
-    public void readFile(String fileName);
-    public void print();
+public interface UpdateConfiguration 
+{
     public void updateModel(String newModelName, int basePrice);
     public void updateOptionSet(String optSetName, String newName);
     public void updateOption(String optSetName, String optName, String newName, int newPrice);

@@ -11,6 +11,7 @@ package adapter;
 */
 public abstract class ProxyAutomotive 
 {	
+    // Abstract methods -----------------------------------------------------------------------------
     public abstract void updateModelNameAndPrice(String newModelName, int newBasePrice);
     public abstract void updateOptionSet(String optSetName, String newName);
     public abstract void updateOption(String optSetName, String optName, String newName, int newPrice);

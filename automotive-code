@@ -118,3 +118,50 @@
     {
         auto = new FileIO("FordZTW.txt").buildAutoFromFile();
     }
+    
+    
+    
+    
+      /**
+    * Writing a automotive object to with the extension .ser 
+    * @param object the automotive object
+    */
+    public void writeAutoObjToFile(Automotive object)
+    {
+        System.out.printf("Serializing Automotive Object..........\n");
+        try
+        {  
+            FileOutputStream file = new FileOutputStream(fileName.replaceAll("\\.txt", ".ser"));
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(object);
+            out.close();
+        } 
+        catch (Exception e)
+        {
+            System.out.print("Serialization Error: " + e);
+            System.exit(1);
+        }    
+    }
+    
+    /**
+    * Read and return a serialize automotive object 
+    * @return
+    */
+    public Automotive readAutoObjToFile()
+    {
+        System.out.printf("DeSerializing Automotive Object........\n");
+        try
+        {
+            ObjectInputStream input =  new ObjectInputStream(new FileInputStream(fileName + ".ser"));
+            Automotive model = (Automotive) input.readObject();
+            input.close();
+            return model;
+        } 
+        catch (Exception e)
+        {
+            System.out.print("DeSerilization Error: " + e);
+            return null;
+        }
+    }
+    
+   

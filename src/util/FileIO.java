@@ -8,8 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import temp.AutoFileException;
 import exceptions.AutoException;
-import exceptions.AutoFileException;
 
 /**
 * This class is use to read in a text file and build an automotive object 
@@ -19,8 +20,8 @@ import exceptions.AutoFileException;
 */
 public class FileIO
 {
-    // Constants ===================================================================================
-
+    // Constants -----------------------------------------------------------------------------------
+    
     private final int MODEL_NAME = 0;
     private final int BASE_PRICE = 0;
     private final int OPTION_SET = 1;
@@ -30,13 +31,16 @@ public class FileIO
     private final int PRICE = 1;
     private final int OPTION_NAME = 0;
     private final int OPTION_PRICE = 1;
+    private final int NO_MODEL_NAME = 1;
+    private final int NO_BASE_PRICE = 2;
+    private final int NO_OPTIONSET_NAME = 3;
     
-    // Properties ==================================================================================
+    // Properties ----------------------------------------------------------------------------------
     
     private String fileName;
   
-    // Constructors ================================================================================
-
+    // Constructors --------------------------------------------------------------------------------
+    
     /**
     * Constructs a default FILEIO object 
     */
@@ -51,9 +55,8 @@ public class FileIO
         this.fileName = fileName;
     }
     
-   
-    // Getters/Setters =============================================================================
-
+    // Getters/Setters -----------------------------------------------------------------------------
+    
     public String getfileName()
     {
         return fileName;
@@ -64,21 +67,14 @@ public class FileIO
         this.fileName = fileName;
     }
     
-    // Methods =====================================================================================
-    
-    public void test() throws AutoException
-    {
-        System.out.println("Throwing MyException from f()");
-        throw new AutoException("Something really bad happened", 1);
-    }
-    
+    // Methods ---------------------------------------------------------------------------------------
     
     /**
     * Build an Automotive object by reading in a text file and using the Automotive object methods
     * to set in the value from the text file
     * @return
     */
-    public Automotive buildAutoFromFile() throws AutoException
+    public Automotive buildAutoFromFile()
     {
         System.out.printf("Building Automotive Object\n");
         Automotive model = new Automotive();
@@ -96,22 +92,43 @@ public class FileIO
                    eof = true;
                 }   
                 else
-                { 
-                    // System.out.println("else");
+                {   
                     String data[] = line.split(":");
-                    // System.out.println(data[MODEL_NAME]);
-                    //System.out.println(data.length);
-                    if(data[MODEL_NAME].equalsIgnoreCase("Model Name") && data.length != 1)
-                    {   
-                       readModelName(model, data);
+                    if(data[MODEL_NAME].equalsIgnoreCase("Model Name"))
+                    {  
+                        try 
+                        {
+                            readModelName(model, data);
+                        } 
+                        catch (AutoException e) 
+                        {
+                            System.out.printf("%s",e);
+                            e.fixallmyproblem(model);
+                        } 
                     }
                     else if (data[BASE_PRICE].equalsIgnoreCase("Base Price"))
-                    {  
-                        
+                    {
+                        try 
+                        {
+                            readBasePrice(model, data);
+                        } 
+                        catch (AutoException e) 
+                        {
+                            System.out.printf("%s",e);
+                            e.fixallmyproblem(model);
+                        }
                     }
                     else if(data[OPTION].equalsIgnoreCase("Option"))
                     {
-                        
+                        try 
+                        {
+                            readOptionSet(model, data, buffer);
+                        } 
+                        catch (AutoException e) 
+                        {
+                            System.out.printf("%s",e);
+                            e.fixallmyproblem(model);
+                        }
                     }
                 }  
                 
@@ -133,22 +150,33 @@ public class FileIO
     */
     private void readModelName(Automotive model, String[] data) throws AutoException
     {
-        
-        System.out.println("DEBUG" + data[NAME]);
-        if(data[NAME] != null)
+        if(data.length != 1)
         {    
             model.setName(data[NAME]);
-            //return 1;
         }
         else 
         {
-            //return 0;
-            System.out.println("Throwing MyException from readModelName()");
-            throw new AutoException("Unable to find model name in file", 1);
+            throw new AutoException("Unable to find model name in file\n", NO_MODEL_NAME);
         }
-        
-       
     }
+    
+    /**
+    * Read in the base price of the car model
+    * @param model
+    * @param data
+    * @throws AutoFileException
+    */
+    private void readBasePrice(Automotive model, String[] data) throws AutoException
+    {
+        if(data.length != 1)
+        {    
+            model.setPrice(Integer.parseInt(data[PRICE]));
+        }
+        else
+        {    
+            throw new AutoException("File does not contain a base price\n", NO_BASE_PRICE);
+        }
+     }
     
     /**
     * Read in the options
@@ -157,10 +185,19 @@ public class FileIO
     * @param buffer
     * @throws AutoFileException
     */
-    private void readOptionSet(Automotive model, String[] data, BufferedReader buffer) throws AutoFileException
+    private void readOptionSet(Automotive model, String[] data, BufferedReader buffer) throws AutoException
     {
         int numberOfoptions = Integer.parseInt(data[NUM_OF_OPTIONS].trim());
-        model.addOptionSet(data[OPTION_SET], numberOfoptions);
+        
+        if(data.length != 1)
+        {    
+            model.addOptionSet(data[OPTION_SET], numberOfoptions);
+        }
+        else 
+        {
+            throw new AutoException("No Name specified for this optoin set\n", NO_OPTIONSET_NAME);
+        }
+        
         for(int i = 0; i < numberOfoptions; i++) 
         {   
             try 
@@ -173,153 +210,6 @@ public class FileIO
                 System.out.println("Error 101 -- " + e.toString());
             }
        }
-    }
-    
-    /**
-    * Read in the base price of the car model
-    * @param model
-    * @param data
-    * @throws AutoFileException
-    */
-    private void readBasePrice(Automotive model, String[] data) throws AutoFileException
-    {
-        if(data[BASE_PRICE] != null)
-        {    
-            model.setPrice(Integer.parseInt(data[PRICE]));
-        }
-        else
-        {    
-            throw new AutoFileException("File does not contain a base price");
-        }
-    }
-    
-   
-    
-    /**
-    * Extract data from each line in a text and use it to populate the instance variable
-    * in the Automotive object. Data in text file are separated by the character :, split 
-    * method is use to separated the data and populated the automotive object properties.
-    * A for loop is use to add in options for a option set.
-    * @param model  the automotive object that will be initialize with data 
-    * @param line   a line from the text file use for automotive variables initialization
-    * @param buffer buffer data from text file
-    */
-    //private void readModel(Automotive model, String [] data)
-    
-    private void fillAutoObj(Automotive model, String[] data, BufferedReader buffer) throws AutoFileException 
-    {
-        if(data[MODEL_NAME].equalsIgnoreCase("Model Name") && data[NAME] != null) 
-        {   
-            model.setName(data[NAME]);
-        }
-        else 
-        {
-            throw new AutoFileException("Please check the configuration, Model Name doesnt not exist\n");
-        }
-        
-       
-        if(data[BASE_PRICE].equalsIgnoreCase("Base Price")) 
-        {
-            model.setPrice(Integer.parseInt(data[PRICE]));
-        }
-        
-        else if(data[OPTION].equalsIgnoreCase("Option")) 
-        {
-            int numberOfoptions = Integer.parseInt(data[NUM_OF_OPTIONS].trim());
-            model.addOptionSet(data[OPTION_SET], numberOfoptions);
-            for(int i = 0; i < numberOfoptions; i++) 
-            {   
-                try 
-                {   
-                    String [] option = buffer.readLine().split(":");
-                    model.addOption(data[OPTION_SET], option[OPTION_NAME].trim(), Integer.parseInt(option[OPTION_PRICE].trim()));
-                } 
-                catch (Exception e) 
-                {
-                    System.out.println("Error 101 -- " + e.toString());
-                }
-           }
-        }
-    }
-    
-
-    /**
-    * Writing a automotive object to with the extension .ser 
-    * @param object the automotive object
-    */
-    public void writeAutoObjToFile(Automotive object)
-    {
-        System.out.printf("Serializing Automotive Object..........\n");
-        try
-        {  
-            FileOutputStream file = new FileOutputStream(fileName.replaceAll("\\.txt", ".ser"));
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(object);
-            out.close();
-        } 
-        catch (Exception e)
-        {
-            System.out.print("Serialization Error: " + e);
-            System.exit(1);
-        }    
-    }
-    
-    /**
-    * Read and return a serialize automotive object 
-    * @return
-    */
-    public Automotive readAutoObjToFile()
-    {
-        System.out.printf("DeSerializing Automotive Object........\n");
-        try
-        {
-            ObjectInputStream input =  new ObjectInputStream(new FileInputStream(fileName + ".ser"));
-            Automotive model = (Automotive) input.readObject();
-            input.close();
-            return model;
-        } 
-        catch (Exception e)
-        {
-            System.out.print("DeSerilization Error: " + e);
-            return null;
-        }
-    }
-    
-    /**
-    * Build and return an automotive object from a text file
-    * @param fileName the name and path of a file
-    * @return an automotive object
-    */
-    public Automotive readFile(String fileName) throws AutoException 
-    {   
-        System.out.printf("Building Automotive Object\n");
-        Automotive model = new Automotive();
-        try 
-        {
-            FileReader file = new FileReader(fileName);
-            BufferedReader buffer = new BufferedReader(file);
-            boolean eof = false;
-           
-            while (!eof)
-            {
-                String line = buffer.readLine();
-                System.out.println(line);
-                if (line == null)
-                {    
-                   eof = true;
-                }   
-                else
-                {
-                    //fillAutoObj(model, line.split(":"), buffer);
-                }    
-            }
-            buffer.close();
-        } 
-        catch (IOException e) 
-        {
-            System.out.println("Error -- " + e.toString());
-        }
-        return model;
     }
     
     /**
@@ -360,23 +250,6 @@ public class FileIO
             return model;
         } 
         catch (Exception e)
-        {
-            System.out.print("DeSerilization Error: " + e);
-            return null;
-        }
-    }
-     
-    // Testing Methods not being use =============================================================
-    public Object deSerialize (String fileName)
-    {
-        try 
-        {
-            ObjectInputStream input = new ObjectInputStream(new FileInputStream(fileName));
-            Object model = input.readObject();
-            input.close();
-            return model;
-        } 
-        catch (Exception e) 
         {
             System.out.print("DeSerilization Error: " + e);
             return null;
