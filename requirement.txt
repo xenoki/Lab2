@@ -1,0 +1,11 @@
+Build API using abstract class and interface
+Use custom exception handler to enhance program design
+Define a set of methods in an interface of the existing class set
+Create exception handler so it handles at least 5 exceptions
+Create abstract class so your code is extensible and resusable
+Design and code above requirement
+Write driver program to exercise api and test the exception handler
+
+Concept
+Object Theory
+Exception Handling

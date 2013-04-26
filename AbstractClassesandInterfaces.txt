@@ -1,0 +1,299 @@
+//Abstract Classes
+//---------------------------------------------------------------------------------
+public abstract class Time 
+{
+	public abstract int getMinutes();
+}
+
+class Days extends Time 
+{
+	private int days;
+    
+    public int getMinutes() 
+    {
+  		return days * 24 * 60;
+    }
+}
+    
+class HoursMinutes extends Time 
+{
+	private int hours;
+    private int minutes;
+        
+    public int getMinutes() 
+    {
+    	return hours * 60 + minutes;
+    }
+}
+
+
+//Inheriting Inner classes
+//---------------------------------------------------------------------------------
+public class Egg2 
+{
+  	private Yolk y = new Yolk();
+
+	protected class Yolk 
+	{
+    	public Yolk() 
+    	{
+      		System.out.println("Egg2.Yolk()");
+    	}
+
+    	public void f() 
+    	{
+    		System.out.println("Egg2.Yolk.f()");
+    }
+ }
+
+public Egg2() 
+{
+	System.out.println("New Egg2()");
+}
+  public void insertYolk(Yolk yy) {
+    y = yy;
+  }
+  public void g() {
+    y.f();
+  }
+}
+public class BigEgg2 extends Egg2 {
+  public class Yolk extends Egg2.Yolk {
+    public Yolk() {
+      System.out.println("BigEgg2.Yolk()");
+    }
+    public void f() {
+      System.out.println("BigEgg2.Yolk.f()");
+    }
+  }
+  public BigEgg2() {
+    insertYolk(new Yolk());
+  }
+  public static void main(String[] args) {
+    Egg2 e2 = new BigEgg2();
+    e2.g();
+  }
+}
+
+
+//Multiple Inheritance with Inner classes.
+//---------------------------------------------------------------------------------
+class D {
+}
+
+abstract class E {
+}
+
+class Z extends D {
+  E makeE() {
+    return new E() {
+    };
+  }
+}
+
+public class MultiImplementation {
+  static void takesD(D d) {
+  }
+
+  static void takesE(E e) {
+  }
+
+  public static void main(String[] args) {
+    Z z = new Z();
+    takesD(z);
+    takesE(z.makeE());
+  }
+} 
+
+//A really really simple interface
+//---------------------------------------------------------------------------------
+import java.util.Random;
+public interface RandVals 
+{
+  	Random rand = new Random();
+  	int randomInt = rand.nextInt(10);
+ 	long randomLong = rand.nextLong() * 10;
+  	float randomFloat = rand.nextLong() * 10;
+  	double randomDouble = rand.nextDouble() * 10;
+}
+
+
+//Creating an interface vs. an abstract class
+//---------------------------------------------------------------------------------
+interface Time 
+{
+	public int getMinutes();
+}
+    
+class Days implements Time 
+{
+	private final int days;
+    
+    public Days(int days) 
+    {
+    	this.days = days;
+    }
+    
+    public int getMinutes() 
+    {
+    	return days * 24 * 60;
+    }
+}
+    
+    class HoursMinutes implements Time {
+        private final int hours;
+        private final int minutes;
+        public HoursMinutes(int hours, int minutes) {
+            this.hours = hours;
+            this.minutes = minutes;
+        }
+        public int getMinutes() {
+            return hours * 60 + minutes;
+        }
+    }
+    
+    public class AIDemo1 {
+        public static void main(String args[]) {
+            Time t1 = new Days(10);
+            Time t2 = new HoursMinutes(15, 59);
+            System.out.println(t1.getMinutes());
+            System.out.println(t2.getMinutes());
+        }
+    }
+
+
+
+//A simple Interface
+//---------------------------------------------------------------------------------
+interface Act {
+  void act();
+}
+
+class Actor1 implements Act {
+  public void act() {
+    System.out.println("To be, or not to be");
+  }
+}
+
+class Actor2 implements Act {
+  public void act() {
+    System.out.println("Wherefore art thou Romeo?");
+  }
+}
+
+public class TryOut {
+  public static void main(String args[]) {
+    Actor1 hamlet = new Actor1();
+    Actor2 juliet = new Actor2();
+    tryout(hamlet);
+    tryout(juliet);
+  }
+
+  private static void tryout(Act actor) {
+    actor.act();
+  }
+}
+
+Multiple Inheritance with Interfaces - Part 1
+//---------------------------------------------------------------------------------
+interface CanFight {
+  void fight();
+}
+
+interface CanSwim {
+  void swim();
+}
+
+interface CanFly {
+  void fly();
+}
+
+class ActionCharacter {
+  public void fight() {
+  }
+}
+
+class Hero extends ActionCharacter implements CanFight, CanSwim, CanFly {
+  public void swim() {
+  }
+
+  public void fly() {
+  }
+}
+
+public class Adventure {
+  public static void t(CanFight x) {
+    x.fight();
+  }
+
+  public static void u(CanSwim x) {
+    x.swim();
+  }
+
+  public static void v(CanFly x) {
+    x.fly();
+  }
+
+  public static void w(ActionCharacter x) {
+    x.fight();
+  }
+
+  public static void main(String[] args) {
+    Hero h = new Hero();
+    t(h); // Treat it as a CanFight
+    u(h); // Treat it as a CanSwim
+    v(h); // Treat it as a CanFly
+    w(h); // Treat it as an ActionCharacter
+  }
+}
+
+//Multiple Inheritance with interfaces - Part 2
+//---------------------------------------------------------------------------------
+public class MultiSuperInterfaces {
+  public interface Marker extends java.io.Serializable, java.rmi.Remote,
+      java.lang.Runnable {
+  }
+
+  public class Marked implements Marker {
+    public void run() {
+      // needed for Runnable
+    }
+  }
+
+  public static void main(String[] args) {
+    new MultiSuperInterfaces().print();
+  }
+
+  void print() {
+    Object o = new Marked();
+    if (o instanceof java.io.Serializable) {
+      System.out.println("Is Serializable");
+    }
+    if (o instanceof java.rmi.Remote) {
+      System.out.println("Is Remote");
+    }
+    if (o instanceof java.lang.Runnable) {
+      System.out.println("Is Runnable");
+    }
+  }
+}
+
+
+//Looking at a Spaghetti of interfaces and abstract classes.
+interface List {
+        int size();
+        boolean isEmpty();
+    }
+    
+    abstract class AbstractList implements List {
+        public abstract int size();
+        public boolean isEmpty() {
+            return size() == 0;
+        }
+    }
+    
+    class ArrayList extends AbstractList {
+        public int size() {
+            return 0; // placeholder
+        }
+    }

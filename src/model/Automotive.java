@@ -1,106 +1,61 @@
 package model;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import adapter.ProxyAutomotive;
-
-import util.FileIO;
-
 /**
-* Hung Quach
-* CIS 35B
-* Lab 1:
-* Due Date:       4/15/2013
-* Date Submitted: 4/15/2013
-*
 * This class provide an Automotive object in which you can store, serialize, 
 * and print the model name, base price, and the set of options for a car 
 * configuration
 */
 public class Automotive extends ProxyAutomotive implements Serializable 
 {
-    // Constants ========================================================
-
-	@Override
-	public Automotive buildAuto(String fileName) 
-	{
-		return new FileIO(fileName).readFile();
-	}
-
-	@Override
-	public void modifyNameAndBasePrice(String modelName, int basePrice) 
-	{
-		updateModelNameAndPrice(modelName, basePrice);
-	}
-
-	@Override
-	public void modifyOptionSet(String originalSetName, String newSetName) 
-	{
-		updateOptionSet(originalSetName, newSetName);
-    }
-
-	@Override
-	public void modifyOption(String set, String opt, String name, int price) 
-	{
-		updateOption(set, opt, name, price);
-    }
-
-	@Override
-	public void print() {
-		printModel();
-	}
-
-	private static final long serialVersionUID = -5105910834572049363L;
+    // Constants ================================================================================
+    private static final long serialVersionUID = -5105910834572049363L;
     private final int DEFAULT_OPTIONSET = 5;
     
-    // Properties =======================================================
+    // Properties ===============================================================================
 
     private String name;
     private int price;
     private ArrayList<OptionSet> optionset;
     
-    // Constructors =====================================================
+    // Constructors =============================================================================
     
     public Automotive() 
     {
+        super();
         optionset = new ArrayList<OptionSet>(DEFAULT_OPTIONSET);
     }
-
+    
+    public Automotive (String modelName, int basePrice, int initialOptSet)
+    {
+        super();
+        this.name = modelName;
+        this.price = basePrice;
+        optionset = new ArrayList<OptionSet>(initialOptSet);
+    }
+    
+    public Automotive(String name, int price) 
+    {   
+        super();
+        this.name = name;
+        this.price = price;
+        optionset = new ArrayList<OptionSet>(DEFAULT_OPTIONSET);
+    }
+    
     public Automotive(String name) 
     {
+        super();
         this.name = name;
-        optionset = new ArrayList<OptionSet>(DEFAULT_OPTIONSET);
     }
     
     public Automotive(int price)
     {
+        super();
         this.price = price;
-        optionset = new ArrayList<OptionSet>(DEFAULT_OPTIONSET);
     }
 
-    public Automotive(String name, int price) 
-    {   
-        this.name = name;
-        this.price = price;
-        optionset = new ArrayList<OptionSet>(DEFAULT_OPTIONSET);
-    }
-    
-    public Automotive(String name, int price, int size) 
-    {
-        this.name = name;
-        this.price = price;
-        optionset = new ArrayList<OptionSet>(size);
-    }
-
-    public Automotive(String name, int price, ArrayList<OptionSet> optionset) 
-    {
-        this.name = name;
-        this.price = price;
-        this.optionset = optionset;
-    }
-    
-    // Getters/Setters ==================================================
+    // Getters/Setters ==========================================================================
 
     public String getName() 
     {
@@ -122,57 +77,8 @@ public class Automotive extends ProxyAutomotive implements Serializable
         this.price = price;
     }
     
-    public ArrayList<OptionSet> getOptionset() 
-    {
-        return optionset;
-    }
-
-    public void setOptionset(ArrayList<OptionSet> optionset) 
-    {
-        this.optionset = optionset;
-    }
-    
-    // Methods ==========================================================
-    public Automotive createAutomotive(String filename)
-    {
-    	Automotive temp = new FileIO().readFile(filename);
-    	return temp;
-    }
-    
-    public void updateModelNameAndPrice(String name, int price)
-    {
-    	this.name = name;
-    	this.price = price;
-    }
-    
-    public void updateOption(String optName, String optionName, String newName, int newPrice)
-    {
-    	matchOptionSet(optName).getOption(optionName).update(newName, newPrice);
-    }
-    
-    /**
-    * Add a new option set to the array list of option set. 
-    * @param name           the name of the option set
-    * @param numOfOptions   the initial number of product it can hold before
-    *                       allocating more space
-    */
-    public void addOptionSet(String name, int numOfOptions)
-    {
-        optionset.add(new OptionSet(name, numOfOptions));
-    }
-    
-    /**
-    * Add an option to a specified set. Call method matchOptionSet to find
-    * the option set to add the option. 
-    * @param optSetName the name of the option set
-    * @param name       the name of the option
-    * @param price      the price of the option
-    */
-    public void addOptionToSet(String optSetName, String name, int price)
-    {
-        matchOptionSet(optSetName).addNewOption(name, price);
-    }
-    
+    // Methods ==================================================================================
+   
     /**
     * Find the optionSet with a specified name in the array list and return that 
     * optionSet, return null if not found. 
@@ -216,19 +122,6 @@ public class Automotive extends ProxyAutomotive implements Serializable
         } 
     }
     
-    /**
-    * Print the configuration data of the automobile object
-    */
-    public void printModel()
-    {
-        System.out.printf("Model name: %s\n", name);
-        System.out.printf("Base price: %d\n", price);
-        for(int i = 0; i < optionset.size(); i++)
-        {
-            optionset.get(i).printOptionSet();
-        }
-    }
-     
     /** 
     * Returns the String representation of Automotive for debugging and 
     * logging purposes.
@@ -239,127 +132,77 @@ public class Automotive extends ProxyAutomotive implements Serializable
         return String.format("Automotive[ name = %s,  price = %d, optionset = %s]",
                 name, price, optionset);
     }
-     
-    // CRUD Methods =====================================================
     
     /**
-    * Create a new OptionSet object
-    * @param optionSetName the name of the option set
-    * @param size the initial size of option array list
-    * @return the OptionSet object
+    * Print the configuration data of the Automotive object 
     */
-    public OptionSet createNewOptionSet(String optionSetName, int size)
+    public void print()
     {
-        return new OptionSet(optionSetName, size);
-    }
-    
-    /**
-    * Create a new Option object
-    * @param name the name of the option
-    * @param price the price of the option
-    * @return the Option object
-    */
-    public OptionSet.Option createNewOption(String name, int price)
-    {
-        return new OptionSet().new Option(name, price);
-    }
-    
-    /**
-    * Get the specified option set 
-    * @param optionSetName the name of the option set
-    * @return the option set object
-    */
-    public OptionSet readOptionSet(String optionSetName)
-    {  
-        return matchOptionSet(optionSetName);
-    }
-    
-    /**
-    * Get a option in a specified Option set 
-    * @param optionSetName the name of the
-    * @param name the name of the option 
-    * @return the option object
-    */
-    public OptionSet.Option readOption(String optionSetName, String name)
-    {
-        try
+        System.out.println("Printing from Automotive");
+        System.out.printf("Model name: %s\n", name);
+        System.out.printf("Base price: %d\n", price);
+        for(int i = 0; i < optionset.size(); i++)
         {
-            return matchOptionSet(optionSetName).getOption(name);
+            optionset.get(i).printOptionSet();
+        }
+    }
+    
+    // Overriding ProxyAutomotive method
+    
+    /**
+    * Update the model name and price 
+    */
+    public void updateModelNameAndPrice(String newModelName, int newBasePrice) 
+    {
+        this.name = newModelName;
+        this.price = newBasePrice;
+    }
 
-        }
-        catch (NullPointerException e)
-        {
-            System.out.printf("Error %s\n", e);
-            System.out.printf("Unable to read option from %s Option Set\n", optionSetName );
-            return null;
-        }
-    }
-    
     /**
-    * Update the name of the option set, throws null pointer error if unable
-    * to update
-    * @param optSetName the name of the option set to update
-    * @param name the new name that will be use to change the previous name
+    * Add a new option Set 
     */
-    public void updateOptionSet(String optSetName, String name)
+    public void addOptionSet(String optSetName, int numOfOptions) 
     {
-        try
-        {
-            matchOptionSet(optSetName).setName(name);
-        } 
-        catch (NullPointerException e)
-        {
-            System.out.printf("Error: %s\n", e);
-            System.out.printf("Unable to find %s to update\n",optSetName);
-        }
+        optionset.add(new OptionSet(optSetName, numOfOptions));
     }
-     
-    /**
-    * Update the option in a specified option set 
-    * @param optSetName the name of the option set 
-    * @param name the new name of the option
-    * @param price the new price of the option
-    */
-    public void updateOptionInOptionSet(String optSetName, String name, int price)
-    {
-        try
-        {
-            matchOptionSet(optSetName).setOption(name, price);
 
-        } catch (NullPointerException e)
-        {
-            System.out.printf("Error: %s\n", e);
-            System.out.printf("Unable to find Option Set %s to update\n", optSetName);
-        }
-    }
-     
     /**
-    * Delete an option set in the array list bases on index location throw a
-    * index out of bound error if the element doesn't not exist
-    * @param i the location of the option set in the array list to be deleted
+    * Give a option set name, add in a new option 
     */
-    public void deleteOptionSet(int i)
-    {   
-        try
-        {
-            optionset.remove(i);
-
-        } 
-        catch (IndexOutOfBoundsException e)
-        {
-            System.out.printf("Error: %s\n", e);
-            System.out.printf("Location of OptionSet does not exist to delete\n");
-        }
-    }
-    
-    /**
-    * Delete an option set in the list base on index location
-    * @param name
-    */
-    public void deleteOptionSet(String name)
+    public void addOption(String optSetName, String optName, int price) 
     {
-        optionset.remove(matchOptionSet(name));
+        matchOptionSet(optSetName).addNewOption(optName, price);
     }
     
-   
+    /**
+    * Update the name of the option set. 
+    */
+    public void updateOptionSet(String optSetName, String newName) 
+    {
+        matchOptionSet(optSetName).setName(newName);
+    }
+
+    @Override
+    public void updateOption(String optSetName, String optName, String newName, int newPrice) 
+    {
+        matchOptionSet(optSetName).getOption(optName).update(newName, newPrice);
+    }
+    
+    @Override
+    public void deleteOptionSet(String optSetName) 
+    {
+        optionset.remove(matchOptionSet(optSetName));
+    }
+
+    @Override
+    public void deleteOptionSet(int i) 
+    {
+        optionset.remove(i);
+    }
+
+    @Override
+    public void deleteOption(String optSetName, String optName) 
+    {
+        matchOptionSet(optSetName).deleteOption(optName);
+    }
 }

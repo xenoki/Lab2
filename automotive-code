@@ -1,0 +1,120 @@
+  /**
+    * Add a new option set to Automotive option set array list 
+    */
+    public void addOptionSet(String name, int numOfOptions)
+    {
+        optionset.add(new OptionSet(name, numOfOptions));
+    }
+    
+    /**
+    * Give a option set name, add a new option to that option set name 
+    */
+    public void addOption(String optSetName, String name, int price)
+    {
+        matchOptionSet(optSetName).addNewOption(name, price);
+    }
+    
+    // CRUD: Read
+    
+    /**
+    * Given a index location, return the name of that option set 
+    */
+    public String readOptionSet(int index)
+    {  
+        return matchOptionSet(index).getName();
+    }
+    
+    /**
+    * Given a option set name, and a index location of option, return
+    * the name and price of that that option 
+    */
+    public String readOption(String optionSetName, int index)
+    {
+        try
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(matchOptionSet(optionSetName).getOptions().get(index).getName());
+            sb.append(" ");
+            sb.append(Integer.toString(matchOptionSet(optionSetName).getOptions().get(index).getPrice()));
+            return sb.toString();
+        }
+        catch (NullPointerException e)
+        {
+            System.out.printf("Error %s\n", e);
+            System.out.printf("Unable to read option from %s Option Set\n", optionSetName );
+            return null;
+        }
+    }
+    
+    // CRUD: Update
+    
+    /**
+    * 
+    */
+    public void updateModelNameAndPrice(String modelName, int basePrice)
+    {
+        this.name = modelName;
+        this.price = basePrice;
+    }
+    
+    /**
+    * 
+    */
+    public void updateOptionSet(String optSetName, String name)
+    {
+        try
+        {
+            matchOptionSet(optSetName).setName(name);
+        } 
+        catch (NullPointerException e)
+        {
+            System.out.printf("Error: %s\n", e);
+            System.out.printf("Unable to find %s to update\n",optSetName);
+        }
+    }
+    
+    /**
+    * 
+    */
+    public void updateOption(String optSetName, String optName, String newName, int newPrice)
+    {
+        matchOptionSet(optSetName).getOption(optName).update(newName, newPrice);
+    }
+    
+    // CRUD: Delete
+    
+    /**
+    * 
+    */
+    public void deleteOptionSet(String optSetName)
+    {
+        optionset.remove(matchOptionSet(optSetName));
+    }
+    
+    /**
+    * 
+    */
+    public void deleteOptionSet(int i)
+    {   
+        try
+        {
+            optionset.remove(i);
+
+        } 
+        catch (IndexOutOfBoundsException e)
+        {
+            System.out.printf("Error: %s\n", e);
+            System.out.printf("Location of OptionSet does not exist to delete\n");
+        }
+    }
+   
+    public void deleteOption(String optSetName, String optName) 
+    {
+        matchOptionSet(optSetName).deleteOption(optName);
+    }
+
+    @Override
+    public void buildAutomotive() 
+    {
+        auto = new FileIO("FordZTW.txt").buildAutoFromFile();
+    }

@@ -216,6 +216,23 @@ public class OptionSet implements Serializable
     }
     
     /**
+    * Delete the option based on the name 
+    * @param name
+    */
+    public void deleteOption(String name)
+    {
+        
+        try
+        {
+            _options.remove(findOption(name));
+        } 
+        catch (Exception e)
+        {
+            System.out.printf("Error: %s", e);
+        }
+    }
+    
+    /**
     * This class create a option object to store the name and price of the option
     */
     public class Option implements Serializable 

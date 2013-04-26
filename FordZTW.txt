@@ -1,12 +1,12 @@
-Model Name:Ford Focus Wagon ZTW
+Model Name:
 Base Price:18445
 Option:Color:10           
 	   Fort Knox Gold Clearcoat Metallic:0
-           Liquid Grey Clearcoat Metallic:0
-           Infra-Red Clearcoat:0
-           Grabber Green Clearcoat Metallic:0
-           Sangria Red Clearcoat Metallic:0
-           French Blue Clearcoat Metallic:0
+       Liquid Grey Clearcoat Metallic:0
+       Infra-Red Clearcoat:0
+       Grabber Green Clearcoat Metallic:0
+       Sangria Red Clearcoat Metallic:0
+       French Blue Clearcoat Metallic:0
  	   Twilight Blue Clearcoat Metallic:0
 	   CD Silver Clearcoat Metallic:0
  	   Pitch Black Clearcoat:0
